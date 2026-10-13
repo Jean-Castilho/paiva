@@ -12,7 +12,7 @@ if (!uri) {
 
 const client = new MongoClient(uri);
 const DB_NAME = "paiva";
-const INIT_COLLECTION_NAME = "_app_init";
+const INIT_COLLECTION_NAME = "zirim";
 
 let db;
 let bucket;
