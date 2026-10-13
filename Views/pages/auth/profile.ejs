@@ -1,0 +1,114 @@
+<link rel="stylesheet" href="/css/pages/profile.css">
+<section class="profile-page">
+  <div class="profile-container">
+    <div class="profile-content">
+      <div class="user-info-card">
+        <div class="profile-avatar-container">
+          <div class="profile-avatar">
+            <%= user?.name ? user.name.charAt(0).toUpperCase() : 'U' %>
+          </div>
+        </div>
+
+        <div class="info-group">
+          
+          <strong>Nome:</strong>
+          <p>
+            <%= user?.name || 'Não informado' %>
+          </p>
+        </div>
+        <div class="info-group">
+          <strong>Email:</strong>
+          <p>
+            <%= user?.email?.endereco || 'Não informado' %>
+            <% if (user?.email?.endereco) { %>
+              <% if (user?.email?.verified) { %>
+                <span class="badge verified">Verificado</span>
+              <% } else { %>
+                <a class="badge unverified" href="/verify-contact?type=email" aria-label="Não verificado. Solicitar código por e-mail">Não verificado</a>
+              <% } %>
+            <% } %>
+          </p>
+        </div>
+        <div class="info-group">
+          <strong>Telefone:</strong>
+          <p>
+            <%= user?.phone?.number || 'Não informado' %>
+            <% if (user?.phone?.number) { %>
+              <% if (user?.phone?.verified) { %>
+                <span class="badge verified">Verificado</span>
+              <% } else { %>
+                <a class="badge unverified" href="/verify-contact?type=phone" aria-label="Não verificado. Solicitar código pelo WhatsApp">Não verificado</a>
+              <% } %>
+            <% } %>
+          </p>
+        </div>
+        <div class="info-group">
+          <strong>Cargo:</strong>
+          <p>
+            <%= user?.role ==='admin' ? 'Administrador' : ((user?.role === 'entregador' || user?.role === 'delivery') ? 'Entregador' : 'Usuário') %>
+          </p>
+        </div>
+        <div class="profile-actions">
+          <a href="/logout" class="btn-logout">Sair da Conta</a>
+        </div>
+      </div>
+
+      <div class="user-orders-card">
+        <h2>Meus Pedidos</h2>
+        <% if (user?.orderns && user.orderns.length > 0) { %>
+          <ul class="orders-list">
+            <% user.orderns.slice().reverse().forEach(order => { %>
+              <li class="order-item">
+                <div class="order-header">
+                  <strong>Pedido #<%= String(order._id || order.id || 'N/A').slice(-6).toUpperCase() %></strong>
+                  <span class="order-date">
+                    <%= new Date(order.createdAt || order.date || Date.now()).toLocaleDateString('pt-BR') %>
+                  </span>
+                </div>
+                <div class="order-details">
+                  <div class="order-status <%= order.status || 'pendente' %>">
+                    <% 
+                      let statusLabel = 'Aguardando Pagamento';
+                      if (order.status === 'pago') statusLabel = 'Pago / Preparando';
+                      else if (order.status === 'preparado') statusLabel = 'Pronto p/ Envio';
+                      else if (order.status === 'em_rota') statusLabel = 'Em Rota de Entrega';
+                      else if (order.status === 'entregue') statusLabel = 'Entregue';
+                      else if (order.status === 'cancelado') statusLabel = 'Cancelado';
+                      else if (order.status === 'expirado') statusLabel = 'PIX Expirado';
+                    %>
+                    <%= statusLabel %>
+                  </div>
+                  <div class="order-total">
+                    R$ <%= (order.total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %>
+                  </div>
+                </div>
+                <% if (order.delivery?.confirmationCodePlain && ['preparado', 'em_rota'].includes(order.status)) { %>
+                  <div>
+                    <div class="order-pin-container" title="Informe este código ao entregador no ato do recebimento">
+                      <span class="material-icons u-font-size-15px-color-0ca678">vpn_key</span>
+                      <span class="u-font-size-0-8rem-color-2b8a3e-font-w-7cd895">PIN de Entrega:</span>
+                      <strong class="u-font-family-monospace-font-size-1rem-56d723"><%= order.delivery.confirmationCodePlain %></strong>
+                    </div>
+                  </div>
+                <% } %>
+                <% if (order._id || order.id) { %>
+                  <% if (order.status === 'pendente') { %>
+                    <a href="/checkout/<%= order._id || order.id %>" class="order-link order-link-pay">
+                      <span class="order-link-pay-content">
+                        Pagar Pedido <span class="material-icons order-link-pay-icon">payment</span>
+                      </span>
+                    </a>
+                  <% } else { %>
+                    <a href="/checkout/<%= order._id || order.id %>" class="order-link">Visualizar detalhes</a>
+                  <% } %>
+                <% } %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p class="no-orders">Você ainda não realizou nenhum pedido.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/css/pages/verify-otp.css">
+<section class="verify-otp-page">
+  <div class="verify-otp-container">
+    <h1 class="verify-otp-title"><%= titulo %></h1>
+    <p class="verify-otp-message"><%= message %></p>
+
+    <form id="verifyOtpForm" class="verify-otp-form">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" value="<%= email %>" readonly required>
+      </div>
+      <div class="form-group">
+        <label for="otp">Código de Verificação</label>
+        <input type="text" id="otp" name="otp" placeholder="Insira seu código OTP" required maxlength="6">
+      </div>
+      <button type="submit" class="btn-primary">Verificar</button>
+    </form>
+
+    <script src="/js/verify-otp.js"></script>
+
+    <p class="resend-otp-prompt">Não recebeu o código? <a href="/send-otp?email=<%= email %>" class="resend-otp-link">Reenviar código</a></p>
+  </div>
+</section>
+

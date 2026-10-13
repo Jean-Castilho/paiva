@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="/css/pages/register.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.10/css/intlTelInput.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.10/js/intlTelInput.min.js"></script>
+
+<section class="register-page">
+  <div class="register-container">
+    <h1 class="register-title"><%= titulo %></h1>
+
+    <form id="registerForm" class="register-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="form-group">
+        <label for="name">Nome Completo</label>
+        <div class="input-with-icon">
+          <i class="material-icons">person_outline</i>
+          <input type="text" id="name" name="name" placeholder="Seu nome completo" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <div class="input-with-icon">
+          <i class="material-icons">mail_outline</i>
+          <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="phone">Telefone</label>
+        <div class="input-with-icon">
+          <i class="material-icons">phone_iphone</i>
+          <input type="text" id="phone" name="phone" placeholder="Seu telefone" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <div class="input-with-icon">
+          <i class="material-icons">lock_outline</i>
+          <input type="password" id="password" name="password" placeholder="Crie uma senha" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Senha</label>
+        <div class="input-with-icon">
+          <i class="material-icons">verified_user</i>
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme sua senha" required>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">Registrar</button>
+    </form>
+
+    <script src="/js/register.js"></script>
+
+    <p class="login-prompt">Já tem uma conta? <a href="/login" class="login-link" hx-get="/login" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Faça login aqui!</a></p>
+  </div>
+</section>
+

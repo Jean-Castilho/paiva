@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="/css/pages/add-product.css">
+
+<div class="admin-container">
+  <header class="admin-header">
+    <h1>
+      <%= titulo %>
+    </h1>
+    <p>
+      <%= message %>
+    </p>
+  </header>
+
+  <div class="admin-form-wrapper">
+    <form action="/products" method="POST" enctype="multipart/form-data" hx-boost="false">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <!-- Informações Básicas -->
+      <h3 class="form-section-title">Informações Básicas</h3>
+
+      <div class="form-grid">
+        <div class="form-group grid-group">
+          <label for="name" class="form-label">Nome do Produto *</label>
+          <input type="text" id="name" name="nome" required class="form-control">
+        </div>
+
+        <div class="form-group grid-group">
+          <label for="category" class="form-label">Categoria *</label>
+          <select id="category" name="categoria" required class="form-control">
+            <option value="">Selecione uma categoria</option>
+            <option value="feminino">Moda Feminina</option>
+            <option value="masculino">Moda Masculina</option>
+            <option value="calcados">Calçados</option>
+            <option value="acessorios">Acessórios</option>
+            <option value="unissex">Unissex</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="form-label">Descrição do Produto</label>
+        <textarea id="description" name="descricao" rows="4" class="form-control"></textarea>
+      </div>
+
+      <!-- Variações -->
+      <h3 class="form-section-title">Variações</h3>
+      <div id="variations-container"></div>
+      <button type="button" id="add-variation-btn" class="btn-add-variation">
+        <i class="material-icons">add_circle_outline</i>
+        Adicionar Variação
+      </button>
+
+      <!-- Ações -->
+      <div class="form-actions">
+        <a href="/inventory" class="btn btn-cancel">Cancelar</a>
+        <button type="submit" class="btn btn-save">Salvar Produto</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script src="/js/add-product.js"></script>

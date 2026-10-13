@@ -1,0 +1,29 @@
+<div class="error-page-wrapper">
+    <div class="breadcrumb">
+        <a href="/">Home</a> / <span>Erro</span>
+    </div>
+
+    <div class="error-container">
+        <div class="error-content">
+            <div class="error-visual">
+                <i class="material-icons error-icon">error_outline</i>
+                <% if (locals.statusCode) { %>
+                    <span class="error-code-badge"><%= statusCode %></span>
+                <% } %>
+            </div>
+            
+            <h1 class="error-title"><%= titulo || 'Ops! Algo deu errado.' %></h1>
+            
+            <p class="error-message"><%= errorMessage || 'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.' %></p>
+            
+            <div class="error-actions">
+                <a href="/" class="btn-primary">
+                    <i class="material-icons">home</i> Voltar para a Home
+                </a>
+                <a href="/products" class="btn-secondary">
+                    <i class="material-icons">shopping_bag</i> Ver Produtos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

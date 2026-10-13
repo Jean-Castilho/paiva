@@ -1,0 +1,165 @@
+<link rel="stylesheet" href="/css/pages/delivery.css">
+
+<input type="hidden" id="csrf-token" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+<div class="courier-container">
+    <header class="courier-header u-display-flex-justify-content-space-b-d4645e">
+        <div>
+            <h1>Painel do Entregador</h1>
+            <p class="courier-subtitle">
+                Olá, <strong><%= (typeof user !== 'undefined' && user?.name) || 'Entregador' %></strong> &bull; Entregas em rota: <strong id="deliveries-count"><%= (deliveries && deliveries.length) || 0 %></strong>
+            </p>
+        </div>
+        <% if (typeof user !== 'undefined' && user?.role === 'admin') { %>
+            <a href="/delivery" class="btn-route u-text-decoration-none-display-inline-67f31f">
+                <i data-lucide="map"></i> Ver Mapa de Entregas
+            </a>
+        <% } %>
+    </header>
+
+    <section class="available-orders-section u-margin-bottom-2rem">
+        <h2 class="u-font-size-1-15rem-font-weight-700-ma-0e9e45">
+            Pedidos Prontos para Retirada (<span id="available-count"><%= (typeof availableOrders !== 'undefined' && availableOrders.length) || 0 %></span>)
+        </h2>
+        <div class="courier-list" id="available-list">
+            <% if (typeof availableOrders !== 'undefined' && availableOrders.length > 0) { %>
+                <% availableOrders.forEach(order => { 
+                    const shortId = order._id ? order._id.toString().slice(-6).toUpperCase() : '------';
+                    const clientName = order.user?.name || 'Cliente';
+                    const street = order.address?.street || '';
+                    const neighborhood = order.address?.neighborhood ? `, ${order.address.neighborhood}` : '';
+                    const fullAddress = street ? `${street}${neighborhood}` : 'Endereço não informado';
+                %>
+                    <article class="courier-card u-border-left-4px-solid-var-warning" id="available-card-<%= order._id %>">
+                        <div class="courier-card-head">
+                            <span class="order-tag">#<%= shortId %></span>
+                            <span class="status-badge status-pending">
+                                <span class="status-dot"></span> Pronto para Entrega
+                            </span>
+                        </div>
+                        <div class="courier-card-info">
+                            <div class="info-row">
+                                <i data-lucide="user"></i>
+                                <strong><%= clientName %></strong>
+                            </div>
+                            <div class="info-row">
+                                <i data-lucide="map-pin"></i>
+                                <span><%= fullAddress %></span>
+                            </div>
+                        </div>
+                        <div class="courier-card-actions u-grid-template-columns-1fr">
+                            <button type="button" class="btn-confirm" data-action="select-order" data-order-id="<%= order._id %>">
+                                <i data-lucide="package-plus"></i> Aceitar e Iniciar Rota
+                            </button>
+                        </div>
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <p class="u-color-var-text-secondary-font-size-0-9rem">Nenhum pedido aguardando entregador no momento.</p>
+            <% } %>
+        </div>
+    </section>
+
+    <header class="courier-header">
+        <h2 class="u-font-size-1-1rem-color-var-text-prim-41dd53">Minha Rota de Entregas</h2>
+    </header>
+
+    <main class="courier-list" id="courier-list">
+        <% if (deliveries && deliveries.length > 0) { %>
+            <% deliveries.forEach(order => { 
+                const shortId = order._id ? order._id.toString().slice(-6).toUpperCase() : '------';
+                const clientName = order.user?.name || 'Cliente';
+                const rawPhone = order.user?.phone;
+                const clientPhone = (typeof rawPhone === 'object' ? rawPhone?.number : rawPhone) || '';
+                const street = order.address?.street || '';
+                const neighborhood = order.address?.neighborhood ? `, ${order.address.neighborhood}` : '';
+                const fullAddress = street ? `${street}${neighborhood}` : 'Endereço não informado';
+                const lat = order.location?.lat;
+                const lng = order.location?.lng;
+                const routeUrl = (lat && lng) 
+                    ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` 
+                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+            %>
+                <article class="courier-card" id="card-<%= order._id %>">
+                    <div class="courier-card-head">
+                        <span class="order-tag">#<%= shortId %></span>
+                        <span class="status-badge status-transit">
+                            <span class="status-dot"></span> Em Rota
+                        </span>
+                    </div>
+
+                    <div class="courier-card-info">
+                        <div class="info-row">
+                            <i data-lucide="user"></i>
+                            <strong><%= clientName %></strong>
+                        </div>
+                        <% if (clientPhone) { %>
+                            <div class="info-row">
+                                <i data-lucide="phone"></i>
+                                <a href="tel:<%= clientPhone %>" class="phone-link"><%= clientPhone %></a>
+                            </div>
+                        <% } %>
+                        <div class="info-row">
+                            <i data-lucide="map-pin"></i>
+                            <span><%= fullAddress %></span>
+                        </div>
+                    </div>
+
+                    <div class="courier-card-actions">
+                        <a href="<%= routeUrl %>" target="_blank" rel="noopener" class="btn-route">
+                            <i data-lucide="navigation"></i> Traçar Rota
+                        </a>
+                        <button type="button" class="btn-confirm" data-action="open-pin" data-order-id="<%= order._id %>" data-short-id="#<%= shortId %>">
+                            <i data-lucide="check-circle-2"></i> Confirmar Entrega
+                        </button>
+                    </div>
+                </article>
+            <% }) %>
+        <% } else { %>
+            <div class="empty-orders-state u-margin-top-2rem">
+                <div class="empty-icon-wrap">
+                    <i data-lucide="check-check"></i>
+                </div>
+                <h3>Nenhuma entrega pendente</h3>
+                <p>Bom trabalho! Todas as entregas sob sua responsabilidade foram concluídas.</p>
+            </div>
+        <% } %>
+    </main>
+</div>
+
+<!-- Modal de Confirmação por Código -->
+<div class="courier-modal-backdrop u-display-none" id="pin-modal">
+    <div class="courier-modal">
+        <div class="courier-modal-header">
+            <h3>Confirmar Recebimento</h3>
+            <button type="button" class="btn-close-modal" data-action="close-pin">&times;</button>
+        </div>
+        <form id="pin-form">
+            <p class="modal-instruction">Solicite ao cliente o código de segurança e digite abaixo para liberar o pacote:</p>
+            <p class="modal-order-label" id="modal-order-id">Pedido #------</p>
+
+            <div class="pin-input-wrap">
+                <input 
+                    type="text" 
+                    id="pin-code-input" 
+                    name="code" 
+                    inputmode="numeric" 
+                    pattern="[0-9]*" 
+                    maxlength="6" 
+                    placeholder="0000" 
+                    required 
+                    autocomplete="one-time-code"
+                />
+            </div>
+
+            <div class="pin-error-feedback u-display-none" id="pin-error-msg"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" data-action="close-pin">Cancelar</button>
+                <button type="submit" class="btn-submit" id="btn-submit-pin">Finalizar Entrega</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="/js/delivery-dashboard.js"></script>

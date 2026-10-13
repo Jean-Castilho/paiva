@@ -1,0 +1,134 @@
+<link rel="stylesheet" href="/css/pages/tabela-users.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.10/css/intlTelInput.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.10/js/intlTelInput.min.js"></script>
+
+<input type="hidden" id="csrf-token" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+
+<div class="admin-container">
+  
+  <header class="admin-header">
+    <div>
+      <h1 class="admin-title"><%= titulo %></h1>
+      <p class="u-color-var-cor-texto-medio"><%= message %></p>
+    </div>
+  </header>
+
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Telefone</th>
+          <th>Função</th>
+          <th>Status</th>
+          <th class="u-text-align-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (users && users.length > 0) { %>
+          <% users.forEach(user => { %>
+            <tr id="user-row-<%= user._id %>"
+                data-id="<%= user._id %>"
+                data-name="<%= user.name %>"
+                data-email="<%= user.email?.endereco || user.email %>"
+                data-phone="<%= user.phone?.number || user.phone || '' %>"
+                data-role="<%= user.role || 'user' %>"
+                data-active="<%= user.isActive !== false %>">
+              <td class="col-name"><%= user.name %></td>
+              <td class="col-email"><%= user.email?.endereco || user.email %></td>
+              <td class="col-phone"><%= user.phone?.number || user.phone || 'N/A' %></td>
+              <td class="col-role">
+                <span class="role-badge"><%= user.role || 'user' %></span>
+              </td>
+              <td class="col-status">
+                <span class="status-badge <%= user.isActive !== false ? 'status-active' : 'status-inactive' %>">
+                  <%= user.isActive !== false ? 'Ativo' : 'Inativo' %>
+                </span>
+              </td>
+              <td class="u-text-align-center">
+                <div class="actions-wrapper">
+                  <button type="button" title="Editar" class="btn-icon btn-edit" data-action="edit-user" data-user-id="<%= user._id %>">
+                    <i class="material-icons">edit</i>
+                  </button>
+                  <button type="button" 
+                        title="Excluir usuário"
+                          class="btn-icon btn-delete"
+                        hx-headers='{"x-csrf-token":"<%= csrfToken %>"}'
+                          hx-delete="/users/edit/<%= user._id %>"
+                          hx-trigger="click"
+                          hx-target="closest tr"
+                          hx-swap="outerHTML swap:0.5s"
+                        hx-confirm="Excluir permanentemente o usuário '<%= user.name %>'? Esta ação não pode ser desfeita.">
+                    <i class="material-icons">delete_forever</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" class="empty-state-cell">
+              <i class="material-icons">people_outline</i>
+              Nenhum usuário encontrado.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="back-link-wrapper">
+    <a href="/dashboard" class="back-link">
+      <i class="material-icons u-font-size-18px">arrow_back</i> Voltar ao Painel
+    </a>
+  </div>
+</div>
+
+<!-- Modal de Edição In-Place -->
+<div class="modal-backdrop" id="edit-user-modal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Editar Usuário</h3>
+      <button type="button" class="btn-close-modal" data-action="close-edit-user">&times;</button>
+    </div>
+    <form id="form-edit-user">
+      <input type="hidden" id="edit-user-id">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="edit-user-name">Nome Completo</label>
+          <input type="text" id="edit-user-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-user-email">E-mail</label>
+          <input type="email" id="edit-user-email" class="form-control u-background-eee-cursor-not-allowed" disabled>
+        </div>
+        <div class="form-group">
+          <label for="edit-user-phone">Telefone</label>
+          <input type="text" id="edit-user-phone" class="form-control" placeholder="(00) 00000-0000">
+        </div>
+        <div class="form-group">
+          <label for="edit-user-role">Função / Perfil</label>
+          <select id="edit-user-role" class="form-control">
+            <option value="user">USER</option>
+            <option value="entregador">ENTREGADOR</option>
+            <option value="admin">ADMIN</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-user-status">Status</label>
+          <select id="edit-user-status" class="form-control">
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-action="close-edit-user">Cancelar</button>
+        <button type="submit" class="btn-primary" id="btn-save-user">Salvar Alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/tabela-users.js"></script>

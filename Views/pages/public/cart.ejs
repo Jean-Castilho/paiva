@@ -1,0 +1,145 @@
+<link rel="stylesheet" href="/css/pages/cart.css">
+<section class="cart-page" aria-labelledby="cart-page-title" data-csrf-token="<%= csrfToken %>">
+    <header class="cart-page-header">
+        <div class="cart-page-title">
+            <span class="cart-page-title-icon" aria-hidden="true">
+                <span class="material-icons">shopping_basket</span>
+            </span>
+            <div>
+                <h1 id="cart-page-title">Meu Carrinho</h1>
+                <p>Revise seus itens, escolha a entrega e finalize sua compra.</p>
+            </div>
+        </div>
+        <span class="cart-page-badge">
+            <span class="material-icons">shield</span>
+            Compra segura
+        </span>
+    </header>
+
+    <div class="cart-container">
+        <div class="cart-main-column">
+            <div id="cart-items" class="cart-items-list" aria-live="polite">
+            </div>
+        </div>
+
+        <aside class="cart-sidebar" aria-label="Resumo da compra">
+        <div class="cart-maps-container" id="cart-maps-container">
+            
+            <div class="cart-cep-header">
+                <div class="cart-cep-title">
+                    <span class="material-icons">local_shipping</span>
+                    <span>Calcular Frete</span>
+                </div>
+                <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank" rel="noopener noreferrer" class="cep-help-link">Não sei meu CEP</a>
+            </div>
+
+            <div class="cart-cep-form">
+                <div class="cep-input-group">
+                    <input 
+                        type="text" 
+                        id="cart-cep-input" 
+                        class="cart-cep-input" 
+                        placeholder="00000-000" 
+                        maxlength="9" 
+                        inputmode="numeric" 
+                        autocomplete="postal-code"
+                    >
+                    <button type="button" id="cart-cep-btn" class="btn-cep-calc">
+                        <span class="material-icons">search</span>
+                        <span>Calcular</span>
+                    </button>
+                </div>
+                <div id="cart-cep-loading" class="cart-cep-loading u-display-none">
+                    <span class="material-icons rotating">sync</span>
+                    <span>Buscando CEP e calculando rotas...</span>
+                </div>
+                <div id="cart-cep-error" class="cart-cep-error u-display-none"></div>
+            </div>
+
+            <% if (!user) { %>
+                <div class="guest-checkout-fields" id="guest-checkout-fields">
+                    <div class="guest-checkout-title">
+                        <span class="material-icons">person_add</span>
+                        <span>Dados do cliente</span>
+                    </div>
+                    <label>
+                        <span>Nome completo</span>
+                        <input id="guest-name" type="text" autocomplete="name" placeholder="Seu nome" required>
+                    </label>
+                    <label>
+                        <span>E-mail</span>
+                        <input id="guest-email" type="email" autocomplete="email" placeholder="seu@email.com" required>
+                    </label>
+                    <label>
+                        <span>Telefone</span>
+                        <input id="guest-phone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000">
+                    </label>
+                </div>
+            <% } %>
+
+            <div id="cart-cep-result" class="cart-cep-result u-display-none">
+                <div class="cep-address-info">
+                    <span class="material-icons">place</span>
+                    <div class="cep-address-text">
+                        <strong id="cep-res-street"></strong>
+                        <span id="cep-res-neighborhood"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="cart-maps"> 
+                <div class="cart-map-title">
+                    <div class="u-display-flex-align-items-center-gap-4px">
+                        <span class="material-icons u-font-size-1-1rem-color-var-cor-secundaria">pin_drop</span>
+                        <span>Mini-Mapa</span>
+                    </div>
+                    <span id="map-status-badge" class="map-status-badge">Aguardando CEP</span>
+                </div>
+                <div id="cart-mini-map" class="cart-mini-map" data-map-api-key="<%= mapApiKey %>">
+                    <div id="cart-map-placeholder" class="map-placeholder">
+                        <span class="material-icons">explore</span>
+                        <p>Digite o seu CEP para ver o mapa</p>
+                    </div>
+                    <article id="cart-map-location-details" class="cart-map-location-details" aria-live="polite" hidden>
+                        <dl class="cart-map-location-data">
+                            <div>
+                                <dt>Latitude</dt>
+                                <dd id="cart-map-location-latitude"></dd>
+                            </div>
+                            <div>
+                                <dt>Longitude</dt>
+                                <dd id="cart-map-location-longitude"></dd>
+                            </div>
+                        </dl>
+                    </article>
+                </div>
+                <p id="cart-map-point" class="cart-map-point">Clique no mapa para marcar o ponto exato de entrega.</p>
+            </div>
+        </div>
+
+        <div class="cart-summary-container">
+            <div class="cart-summary">
+                <div class="summary-item">
+                    <span>Subtotal</span>
+                    <span>R$ <span id="cart-subtotal">0,00</span></span>
+                </div>
+                <div class="summary-item">
+                    <span>Frete</span>
+                    <span class="free-shipping" id="cart-shipping">Grátis</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>R$ <span id="cart-total">0,00</span></span>
+                </div>
+
+                <button id="checkout-btn" class="btn btn-checkout">Finalizar Compra</button>
+
+                <a href="/products" class="btn-continue-shopping">Continuar Comprando</a>
+            </div>
+        </div>
+        </aside>
+    </div>
+</section>
+
+<script src="/js/cart.js"></script>

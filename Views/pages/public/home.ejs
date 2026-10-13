@@ -1,0 +1,115 @@
+<link rel="stylesheet" href="/css/pages/home.css">
+<% const currentBanner = (typeof banner !=='undefined' && banner) ? banner : null;
+
+  const isBannerActive= !currentBanner || currentBanner.ativo !== false;
+  const isButtonEnabled=!currentBanner || currentBanner.exibirBotao !==false;
+  const bannerImage = currentBanner?.imageUrl; 
+  const defaultBg='https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';
+  const heroBg=bannerImage ? ('/image/' + bannerImage) : defaultBg; const bannerTitle=currentBanner?.title || '' ;
+  const bannerDesc=currentBanner?.description || '' ;
+  const hasText=Boolean(bannerTitle.trim() || bannerDesc.trim());
+  const btnLink=currentBanner?.link || '/products';
+  const btnText = currentBanner?.textoBotao || 'Ver Coleção' ; %>
+
+  <div class="home-container">
+
+    <% if (isBannerActive) { %>
+      <section 
+        class="hero <%= (hasText || isButtonEnabled) ? 'hero-with-overlay' : '' %> preload-bg skeleton-loader"
+        data-bg="<%= heroBg %>"
+      >
+        <% if (bannerTitle.trim()) { %>
+          <h1>
+            <%= bannerTitle %>
+          </h1>
+          <% } %>
+
+            <% if (bannerDesc.trim()) { %>
+              <p>
+                <%= bannerDesc %>
+              </p>
+              <% } %>
+
+                <% if (isButtonEnabled) { %>
+                  <a href="<%= btnLink %>" class="btn">
+                    <%= btnText %>
+                  </a>
+                  <% } else if (btnLink) { %>
+                    <a href="<%= btnLink %>" class="hero-link-overlay" aria-label="Acessar link do banner"></a>
+                    <% } %>
+      </section>
+      <% } %>
+
+        
+      
+      <section class="categories">
+          <div class="categories-wrapper">
+            <% 
+              const defaultCategories = [
+                { title: 'Moda', link: '/products?category=todos', imageUrl: 'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=400&q=80' },
+                { title: 'Calçados', link: '/products?category=calcados', imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' }
+              ];
+              const categoriesList = (currentBanner?.categories && currentBanner.categories.length > 0)
+                ? currentBanner.categories
+                : defaultCategories;
+            %>
+
+            <% categoriesList.forEach(category => { 
+                const catImg = category.imageUrl?.startsWith('http') 
+                  ? category.imageUrl 
+                  : ('/image/' + category.imageUrl);
+            %>
+              <a href="<%= category.link || '/products' %>" class="category-card">
+                <img 
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3C/svg%3E" 
+                  data-src="<%= catImg %>" 
+                  alt="<%= category.title %>"
+                  width="400"
+                  height="300"
+                  class="preload-img skeleton-loader"
+                >
+                <div class="category-card-content">
+                  <h3><%= category.title %></h3>
+                  <span class="category-link">Explorar</span>
+                </div>
+              </a>
+            <% }) %>
+
+          </div>
+        </section>
+
+
+        <section class="featured-products">
+          <h2>Destaque</h2>
+
+          <% if (products && products.length> 0) { %>
+            <div class="featured-products-wrapper">
+              <% products.forEach(product=> { %>
+                <div class="product-card">
+                  <% let imgSrc='https://via.placeholder.com/400x400' ; if (Array.isArray(product.variacoes?.[0]?.imagens)
+                    && product.variacoes[0].imagens.length > 0) {
+
+                    imgSrc = '/image/' + product.variacoes[0].imagens[0];
+
+                    }
+
+                    %>
+                    <img 
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3C/svg%3E" 
+                      data-src="<%= imgSrc %>" 
+                      alt="<%= product.nome %>"
+                      width="400"
+                      height="400"
+                      class="preload-img skeleton-loader"
+                    >
+                    <a href="/product/<%= product._id %>" class="view-details-btn">Detalhes</a>
+                </div>
+                <% }) %>
+            </div>
+            <% } else { %>
+              <p class="no-products-msg">Novidades chegando em breve!</p>
+              <% } %>
+        </section>
+  </div>
+
+  <script src="/js/home.js"></script>

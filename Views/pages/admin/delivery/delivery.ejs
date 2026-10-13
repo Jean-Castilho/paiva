@@ -1,0 +1,106 @@
+<link rel="stylesheet" href="/css/pages/delivery.css">
+
+<main class="delivery-container" id="delivery-page" data-orders="<%= JSON.stringify(activeOrders || []) %>">
+    <aside class="delivery-sidebar">
+        <header class="panel-header">
+            <div class="panel-header-title">
+                <h2>Entregas Ativas</h2>
+                <span class="orders-count-badge" id="orders-count"><%= (activeOrders && activeOrders.length) || 0 %></span>
+            </div>
+            <div class="panel-actions u-display-flex-gap-6px">
+                <a href="/delivery/courier" class="btn-icon u-display-inline-flex-align-items-cent-bb3d31" title="Abrir Painel do Entregador">
+                    <i class="u-width-16px-height-16px" data-lucide="truck"></i>
+                </a>
+                <button type="button" class="btn-icon" title="Recentralizar entregas" data-action="fit-all">
+                    <i class="u-width-16px-height-16px" data-lucide="maximize-2"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="sidebar-search">
+            <div class="search-input-wrapper">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="order-search" placeholder="Buscar por cliente, pedido ou rua...">
+            </div>
+        </div>
+
+        <div class="orders-list" id="orders-list">
+            <% if (activeOrders && activeOrders.length > 0) { %>
+                <% activeOrders.forEach(order => { 
+                    const orderShortId = order._id ? order._id.toString().slice(-6).toUpperCase() : '------';
+                    const lat = order.location?.lat != null && Number.isFinite(Number(order.location.lat)) ? Number(order.location.lat) : 'null';
+                    const lng = order.location?.lng != null && Number.isFinite(Number(order.location.lng)) ? Number(order.location.lng) : 'null';
+                    const clientName = order.user?.name || 'Cliente Paiva';
+                    const rawPhone = order.user?.phone;
+                    const clientPhone = (typeof rawPhone === 'object' ? rawPhone?.number : rawPhone) || 'Não informado';
+                    const street = order.address?.street || '';
+                    const neighborhood = order.address?.neighborhood ? `, ${order.address.neighborhood}` : '';
+                    const cep = order.address?.cep ? ` (CEP: ${order.address.cep})` : '';
+                    const fullAddress = street ? `${street}${neighborhood}${cep}` : 'Endereço não informado';
+                    const status = order.statusInterno || 'pendente';
+                    const courierName = order.delivery?.courierName || '';
+                %>
+                    <article 
+                        class="order-card" 
+                        id="order-card-<%= order._id %>"
+                        data-search="<%= (orderShortId + ' ' + clientName + ' ' + fullAddress + ' ' + courierName).toLowerCase() %>"
+                        data-action="focus-delivery" data-lat="<%= lat %>" data-lng="<%= lng %>" data-order-id="<%= order._id %>"
+                    >
+                        <div class="order-card-header">
+                            <div class="order-card-id">
+                                <i data-lucide="package" class="icon-sm"></i>
+                                <span>#<%= orderShortId %></span>
+                            </div>
+                            <span class="status-badge <%= status === 'em_rota' ? 'status-transit' : (status === 'preparado' ? 'status-pending' : 'status-transit') %>">
+                                <span class="status-dot"></span>
+                                <%= status === 'em_rota' ? 'Em Rota' : (status === 'preparado' ? 'Pronto' : (status === 'pago' ? 'Pago' : 'Aguard. Pgto')) %>
+                            </span>
+                        </div>
+
+                        <div class="order-card-body">
+                            <div class="order-info-row">
+                                <i data-lucide="user" class="icon-sm"></i>
+                                <span class="client-name"><%= clientName %></span>
+                            </div>
+                            <% if (courierName) { %>
+                                <div class="order-info-row u-color-0284c7">
+                                    <i data-lucide="truck" class="icon-sm"></i>
+                                    <span>Entregador: <strong><%= courierName %></strong></span>
+                                </div>
+                            <% } %>
+                            <div class="order-info-row">
+                                <i data-lucide="phone" class="icon-sm"></i>
+                                <span><%= clientPhone %></span>
+                            </div>
+                            <div class="order-info-row address-row">
+                                <i data-lucide="map-pin" class="icon-sm pin-icon"></i>
+                                <span><%= fullAddress %></span>
+                            </div>
+                        </div>
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-orders-state">
+                    <div class="empty-icon-wrap">
+                        <i class="u-width-28px-height-28px" data-lucide="package-check"></i>
+                    </div>
+                    <h3>Sem entregas ativas</h3>
+                    <p>Todos os pedidos com entrega pendente ou em rota serão exibidos aqui em tempo real.</p>
+                </div>
+            <% } %>
+        </div>
+    </aside>
+
+    <section class="delivery-map-container delivery-map">
+        <div class="map-live-indicator">
+            <span class="live-dot"></span>
+            <span>Monitoramento em Tempo Real</span>
+        </div>
+        <div id="map"></div>
+    </section>
+</main>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= mapApiKey %>"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script src="/js/delivery.js"></script>

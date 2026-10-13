@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="/css/pages/edit-product.css">
+<link rel="stylesheet" href="/css/pages/add-product.css">
+
+<div class="edit-container">
+  <header class="admin-header">
+    <h1 class="admin-title"><%= titulo %></h1>
+    <p><%= message %></p>
+  </header>
+
+  <div class="form-card">
+    <form hx-put="/products/<%= product._id %>"
+          hx-encoding="multipart/form-data" 
+          hx-headers='{"x-csrf-token": "<%= csrfToken %>"}'
+          hx-target="#form-feedback"
+          hx-swap="innerHTML">
+      
+      <div class="form-group">
+        <label for="nome">Nome do Produto</label>
+        <input type="text" id="nome" name="nome" class="form-control" value="<%= product.nome %>" required>
+      </div>
+
+      <div class="form-group">
+        <label for="categoria">Categoria</label>
+        <select id="categoria" name="categoria" class="form-control">
+          <option value="feminino" <%= product.categoria === 'feminino' ? 'selected' : '' %>>Moda Feminina</option>
+          <option value="masculino" <%= product.categoria === 'masculino' ? 'selected' : '' %>>Moda Masculina</option>
+          <option value="calcados" <%= product.categoria === 'calcados' ? 'selected' : '' %>>Calçados</option>
+          <option value="acessorios" <%= product.categoria === 'acessorios' ? 'selected' : '' %>>Acessórios</option>
+          <option value="unissex" <%= product.categoria === 'unissex' ? 'selected' : '' %>>Unissex</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" name="descricao" rows="4" class="form-control"><%= product.descricao %></textarea>
+      </div>
+
+      <h3 class="form-section-title">Variações</h3>
+      
+      <div id="variations-container" data-initial="<%= JSON.stringify(product.variacoes || []) %>"></div>
+      <button type="button" id="add-variation-btn" class="btn-add-variation">
+        <i class="material-icons">add_circle_outline</i>
+        Adicionar Variação
+      </button>
+
+      <div id="form-feedback"></div>
+
+      <div class="u-margin-top-30px-padding-top-20px-bor-209ded">
+        <button type="submit" class="btn-submit">
+          <i class="material-icons u-vertical-align-middle-font-size-18px">save</i>
+          Salvar Alterações
+        </button>
+        <a href="/inventory" class="btn-back">Cancelar e Voltar</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/edit-product.js"></script>

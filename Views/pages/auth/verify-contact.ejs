@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="/css/pages/verify-contact.css">
+<% if (type === 'phone') { %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.10/css/intlTelInput.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/23.0.10/js/intlTelInput.min.js"></script>
+<% } %>
+
+<section class="verify-contact-page">
+  <div class="verify-contact-container" data-contact-type="<%= type %>">
+    <a class="verify-contact-back" href="/profile">
+      <span class="material-icons" aria-hidden="true">arrow_back</span>
+      Voltar ao perfil
+    </a>
+
+    <span class="material-icons verify-contact-icon" aria-hidden="true"><%= type === 'phone' ? 'sms' : 'mark_email_read' %></span>
+    <h1><%= titulo %></h1>
+    <p class="verify-contact-description">
+      <% if (type === 'phone') { %>
+        Enviaremos um código pelo WhatsApp para confirmar que este número pertence a você.
+      <% } else { %>
+        Enviaremos um código para o endereço de e-mail cadastrado na sua conta.
+      <% } %>
+    </p>
+
+    <% if (verified) { %>
+      <div class="verify-contact-complete" role="status">
+        <span class="material-icons" aria-hidden="true">check_circle</span>
+        Este contato já está verificado.
+      </div>
+    <% } else { %>
+      <input type="hidden" id="verify-contact-csrf" value="<%= csrfToken %>">
+      <div class="verify-contact-field">
+        <label for="verify-contact-value"><%= type === 'phone' ? 'Número de telefone' : 'E-mail' %></label>
+        <% if (type === 'phone') { %>
+          <input type="tel" id="verify-contact-value" value="<%= contact %>" autocomplete="tel" required>
+        <% } else { %>
+          <input type="email" id="verify-contact-value" value="<%= contact %>" readonly>
+        <% } %>
+      </div>
+
+      <button type="button" id="request-contact-otp" class="verify-contact-button">
+        <span class="material-icons" aria-hidden="true">send</span>
+        Enviar código <%= type === 'phone' ? 'pelo WhatsApp' : 'por e-mail' %>
+      </button>
+
+      <div id="verify-contact-code-area" class="verify-contact-code-area" hidden>
+        <label for="verify-contact-code">Código de 6 dígitos</label>
+        <input type="text" id="verify-contact-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000">
+        <button type="button" id="confirm-contact-otp" class="verify-contact-button">Confirmar código</button>
+      </div>
+      <p id="verify-contact-message" class="verify-contact-message" role="status" aria-live="polite"></p>
+    <% } %>
+  </div>
+</section>
+
+<% if (!verified) { %>
+<script src="/js/verify-contact.js"></script>
+<% } %>

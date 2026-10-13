@@ -1,0 +1,57 @@
+/* Variáveis de Cores e Design System - Paiva */
+:root {
+    /* Cores Principais */
+    --cor-primaria: #111111;    /* Preto Profundo - Elegância e Contraste */
+    --cor-secundaria: #e10732;  /* Vermelho Cereja - Ação e Destaque */
+    --cor-destaque: #cd1d0d;   /* Vermelho Intenso - Hover e Urgência */
+    
+    /* Paleta Neutra */
+    --cor-fundo-claro: #ffffff;
+    --cor-fundo-site: #f8f9fa;
+    --cor-fundo-neutro: #f1f3f5;
+    --cor-borda: #e9ecef;
+    --cor-borda-forte: #dee2e6;
+    
+    /* Texto */
+    --cor-texto-escuro: #212529;
+    --cor-texto-medio: #495057;
+    --cor-texto-suave: #868e96;
+    --cor-texto-claro: #f8f9fa;
+
+    /* Semânticas */
+    --cor-sucesso: #2b8a3e;
+    --cor-erro: #c92a2a;
+    --cor-alerta: #e67e22;
+    --cor-info: #1c7ed6;
+
+    /* Fontes */
+    --fonte-principal: 'Inter', 'Roboto', 'Segoe UI', Arial, sans-serif;
+    --fonte-titulo: 'Montserrat', 'Helvetica Neue', sans-serif;
+    --fonte-botoes: 'Open Sans', 'Roboto', sans-serif;
+
+    /* Elevação e Sombras */
+    --sombra-suave: 0 2px 4px rgba(0,0,0,0.05);
+    --sombra-padrao: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --sombra-media: 0 4px 12px rgba(0,0,0,0.08);
+    --sombra-forte: 0 8px 24px rgba(0,0,0,0.12);
+    --sombra-hover: 0 12px 32px rgba(225, 7, 50, 0.15);
+
+    /* Dimensões do Layout */
+    --altura-header: 70px;
+
+    /* Espaçamento e Bordas */
+    --raio-padrao: 8px;
+    --raio-grande: 16px;
+    --raio-botao: 8px;
+    
+    --espacamento-pequeno: 0.5rem;
+    --espacamento-xs: 0.25rem;
+    --espacamento-sm: 0.5rem;
+    --espacamento-md: 1rem;
+    --espacamento-lg: 2rem;
+    --espacamento-xl: 3rem;
+
+    /* Transições */
+    --transicao-suave: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transicao-rapida: all 0.15s ease-in-out;
+}
