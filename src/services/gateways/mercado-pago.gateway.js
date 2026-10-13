@@ -22,7 +22,7 @@ export const createPixPayment = async ({ amount, payer }) => {
     notification_url: process.env.MERCADOPAGO_WEBHOOK_URL || "https://paiva.onrender.com/orders/webhook",
     date_of_expiration: expirationDate.toISOString(),
     payer: {
-      email: payer.email?.endereco || payer.email || "contato@paiva.com",
+      email: payer.email?.endereco || payer.email || "contato@Paiva.com",
       first_name: firstName,
       last_name: lastNameParts.join(" ") || "Paiva",
       identification: {
